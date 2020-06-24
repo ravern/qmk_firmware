@@ -18,6 +18,8 @@ LED_BACK_ENABLE = yes        # LED backlight (Enable WS2812 RGB underlight.)
 LED_ANIMATIONS = no        # LED animations
 # IOS_DEVICE_ENABLE = no      # connect to IOS device (iPad,iPhone)
 SPLIT_KEYBOARD = yes
+OLED_DRIVER_ENABLE = yes
+
 
 
 # convert Helix-specific options (that represent combinations of standard options)
