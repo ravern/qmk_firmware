@@ -18,10 +18,10 @@ extern uint8_t is_master;
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
 enum layer_number {
-    _QWERTY = 0,
-    _LOWER,
-    _RAISE,
-    _ADJUST
+  _QWERTY = 0,
+  _LOWER,
+  _RAISE,
+  _ADJUST
 };
 
 enum custom_keycodes {
@@ -141,9 +141,9 @@ void persistent_default_layer_set(uint16_t default_layer) {
 // Setting ADJUST layer RGB back to default
 void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
   if (IS_LAYER_ON(layer1) && IS_LAYER_ON(layer2)) {
-    #ifdef RGBLIGHT_ENABLE
-      //rgblight_mode(RGB_current_mode);
-    #endif
+#ifdef RGBLIGHT_ENABLE
+    //rgblight_mode(RGB_current_mode);
+#endif
     layer_on(layer3);
   } else {
     layer_off(layer3);
@@ -152,118 +152,120 @@ void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
+    return true;
+    break;
     case QWERTY:
-      if (record->event.pressed) {
-        persistent_default_layer_set(1UL<<_QWERTY);
-      }
-      return false;
-      break;
+    if (record->event.pressed) {
+      persistent_default_layer_set(1UL<<_QWERTY);
+    }
+    return false;
+    break;
     case LOWER:
-      if (record->event.pressed) {
-          //not sure how to have keyboard check mode and set it to a variable, so my work around
-          //uses another variable that would be set to true after the first time a reactive key is pressed.
-        if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
-        } else {
-          TOG_STATUS = !TOG_STATUS;
-          #ifdef RGBLIGHT_ENABLE
-            //rgblight_mode(RGBLIGHT_MODE_SNAKE + 1);
-          #endif
-        }
-        layer_on(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    if (record->event.pressed) {
+      //not sure how to have keyboard check mode and set it to a variable, so my work around
+      //uses another variable that would be set to true after the first time a reactive key is pressed.
+      if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
       } else {
-        #ifdef RGBLIGHT_ENABLE
-          //rgblight_mode(RGB_current_mode);   // revert RGB to initial mode prior to RGB mode change
-        #endif
-        TOG_STATUS = false;
-        layer_off(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        TOG_STATUS = !TOG_STATUS;
+#ifdef RGBLIGHT_ENABLE
+        //rgblight_mode(RGBLIGHT_MODE_SNAKE + 1);
+#endif
       }
-      return false;
-      break;
+      layer_on(_LOWER);
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    } else {
+#ifdef RGBLIGHT_ENABLE
+      //rgblight_mode(RGB_current_mode);   // revert RGB to initial mode prior to RGB mode change
+#endif
+      TOG_STATUS = false;
+      layer_off(_LOWER);
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    }
+    return false;
+    break;
     case RAISE:
-      if (record->event.pressed) {
-        //not sure how to have keyboard check mode and set it to a variable, so my work around
-        //uses another variable that would be set to true after the first time a reactive key is pressed.
-        if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
-        } else {
-          TOG_STATUS = !TOG_STATUS;
-          #ifdef RGBLIGHT_ENABLE
-            //rgblight_mode(RGBLIGHT_MODE_SNAKE);
-          #endif
-        }
-        layer_on(_RAISE);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    if (record->event.pressed) {
+      //not sure how to have keyboard check mode and set it to a variable, so my work around
+      //uses another variable that would be set to true after the first time a reactive key is pressed.
+      if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
       } else {
-        #ifdef RGBLIGHT_ENABLE
-          //rgblight_mode(RGB_current_mode);  // revert RGB to initial mode prior to RGB mode change
-        #endif
-        layer_off(_RAISE);
-        TOG_STATUS = false;
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        TOG_STATUS = !TOG_STATUS;
+#ifdef RGBLIGHT_ENABLE
+        //rgblight_mode(RGBLIGHT_MODE_SNAKE);
+#endif
       }
-      return false;
-      break;
+      layer_on(_RAISE);
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    } else {
+#ifdef RGBLIGHT_ENABLE
+      //rgblight_mode(RGB_current_mode);  // revert RGB to initial mode prior to RGB mode change
+#endif
+      layer_off(_RAISE);
+      TOG_STATUS = false;
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    }
+    return false;
+    break;
     case ADJUST:
-        if (record->event.pressed) {
-          layer_on(_ADJUST);
-        } else {
-          layer_off(_ADJUST);
-        }
-        return false;
-        break;
-      //led operations - RGB mode change now updates the RGB_current_mode to allow the right RGB mode to be set after reactive keys are released
+    if (record->event.pressed) {
+      layer_on(_ADJUST);
+    } else {
+      layer_off(_ADJUST);
+    }
+    return false;
+    break;
+    //led operations - RGB mode change now updates the RGB_current_mode to allow the right RGB mode to be set after reactive keys are released
     case RGB_MOD:
-      #ifdef RGBLIGHT_ENABLE
-        if (record->event.pressed) {
-          rgblight_mode(RGB_current_mode);
-          rgblight_step();
-          RGB_current_mode = rgblight_config.mode;
-        }
-      #endif
-      return false;
-      break;
+#ifdef RGBLIGHT_ENABLE
+    if (record->event.pressed) {
+      rgblight_mode(RGB_current_mode);
+      rgblight_step();
+      RGB_current_mode = rgblight_config.mode;
+    }
+#endif
+    return false;
+    break;
     case EISU:
-      if (record->event.pressed) {
-        if(keymap_config.swap_lalt_lgui==false){
-          register_code(KC_LANG2);
-        }else{
-          SEND_STRING(SS_LALT("`"));
-        }
-      } else {
-        unregister_code(KC_LANG2);
+    if (record->event.pressed) {
+      if(keymap_config.swap_lalt_lgui==false){
+        register_code(KC_LANG2);
+      }else{
+        SEND_STRING(SS_LALT("`"));
       }
-      return false;
-      break;
+    } else {
+      unregister_code(KC_LANG2);
+    }
+    return false;
+    break;
     case KANA:
-      if (record->event.pressed) {
-        if(keymap_config.swap_lalt_lgui==false){
-          register_code(KC_LANG1);
-        }else{
-          SEND_STRING(SS_LALT("`"));
-        }
-      } else {
-        unregister_code(KC_LANG1);
+    if (record->event.pressed) {
+      if(keymap_config.swap_lalt_lgui==false){
+        register_code(KC_LANG1);
+      }else{
+        SEND_STRING(SS_LALT("`"));
       }
-      return false;
-      break;
+    } else {
+      unregister_code(KC_LANG1);
+    }
+    return false;
+    break;
     case RGBRST:
-      #ifdef RGBLIGHT_ENABLE
-        if (record->event.pressed) {
-          eeconfig_update_rgblight_default();
-          rgblight_enable();
-          RGB_current_mode = rgblight_config.mode;
-        }
-      #endif
-      break;
+#ifdef RGBLIGHT_ENABLE
+    if (record->event.pressed) {
+      eeconfig_update_rgblight_default();
+      rgblight_enable();
+      RGB_current_mode = rgblight_config.mode;
+    }
+#endif
+    break;
   }
   return true;
 }
 
 void matrix_init_user(void) {
-    #ifdef RGBLIGHT_ENABLE
-      RGB_current_mode = rgblight_config.mode;
-    #endif
+#ifdef RGBLIGHT_ENABLE
+  RGB_current_mode = rgblight_config.mode;
+#endif
 }
 
 // OLED Update loop
@@ -277,34 +279,34 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 /*
-static void render_logo(void) {
+   static void render_logo(void) {
 
-  static const char helix_logo[] PROGMEM ={
-    0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8a,0x8b,0x8c,0x8d,0x8e,0x8f,0x90,0x91,0x92,0x93,0x94,
-    0xa0,0xa1,0xa2,0xa3,0xa4,0xa5,0xa6,0xa7,0xa8,0xa9,0xaa,0xab,0xac,0xad,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb4,
-    0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0xd3,0xd4,
-    0};
+   static const char helix_logo[] PROGMEM ={
+   0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8a,0x8b,0x8c,0x8d,0x8e,0x8f,0x90,0x91,0x92,0x93,0x94,
+   0xa0,0xa1,0xa2,0xa3,0xa4,0xa5,0xa6,0xa7,0xa8,0xa9,0xaa,0xab,0xac,0xad,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb4,
+   0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0xd3,0xd4,
+   0};
 
-  oled_write_P(helix_logo, false);
-}
-*/
+   oled_write_P(helix_logo, false);
+   }
+   */
 
 /*
-static void render_rgbled_status(bool full) {
+   static void render_rgbled_status(bool full) {
 #ifdef RGBLIGHT_ENABLE
-  char buf[30];
-  if (RGBLIGHT_MODES > 1 && rgblight_config.enable) {
-      if (full) {
-          snprintf(buf, sizeof(buf), " LED %2d: %d,%d,%d ",
-                   rgblight_config.mode,
-                   rgblight_config.hue/RGBLIGHT_HUE_STEP,
-                   rgblight_config.sat/RGBLIGHT_SAT_STEP,
-                   rgblight_config.val/RGBLIGHT_VAL_STEP);
-      } else {
-          snprintf(buf, sizeof(buf), "[%2d] ",rgblight_config.mode);
-      }
-      oled_write(buf, false);
-  }
+char buf[30];
+if (RGBLIGHT_MODES > 1 && rgblight_config.enable) {
+if (full) {
+snprintf(buf, sizeof(buf), " LED %2d: %d,%d,%d ",
+rgblight_config.mode,
+rgblight_config.hue/RGBLIGHT_HUE_STEP,
+rgblight_config.sat/RGBLIGHT_SAT_STEP,
+rgblight_config.val/RGBLIGHT_VAL_STEP);
+} else {
+snprintf(buf, sizeof(buf), "[%2d] ",rgblight_config.mode);
+}
+oled_write(buf, false);
+}
 #endif
 }
 */
@@ -313,57 +315,56 @@ static void render_layer_status(void) {
   // Define layers here, Have not worked out how to have text displayed for each layer. Copy down the number you see and add a case for it below
   char buf[10];
   oled_write_P(PSTR("Layer: "), false);
-    switch (get_highest_layer(layer_state)) {
-        case _QWERTY:
-           oled_write_P(PSTR("Default"), false);
-           break;
-        case _RAISE:
-           oled_write_P(PSTR("Raise"), false);
-           break;
-        case _LOWER:
-           oled_write_P(PSTR("Lower"), false);
-           break;
-        case _ADJUST:
-           oled_write_P(PSTR("Adjust"), false);
-           break;
-        default:
-           oled_write_P(PSTR("Undef-"), false);
-           snprintf(buf,sizeof(buf), "%ld", layer_state);
-           oled_write(buf, false);
-    }
+  switch (get_highest_layer(layer_state)) {
+    case _QWERTY:
+      oled_write_P(PSTR("Default"), false);
+      break;
+    case _RAISE:
+      oled_write_P(PSTR("Raise"), false);
+      break;
+    case _LOWER:
+      oled_write_P(PSTR("Lower"), false);
+      break;
+    case _ADJUST:
+      oled_write_P(PSTR("Adjust"), false);
+      break;
+    default:
+      oled_write_P(PSTR("Undef-"), false);
+      snprintf(buf,sizeof(buf), "%ld", layer_state);
+      oled_write(buf, false);
+  }
   oled_write_P(PSTR("\n"), false);
 }
 
 /*
-void render_status(void) {
-  // Render to mode icon
-  static const char os_logo[][2][3] PROGMEM  ={{{0x95,0x96,0},{0xb5,0xb6,0}},{{0x97,0x98,0},{0xb7,0xb8,0}}};
-  if(keymap_config.swap_lalt_lgui==false){
-    oled_write_P(os_logo[0][0], false);
-    oled_write_P(PSTR("\n"), false);
-    oled_write_P(os_logo[0][1], false);
-  }else{
-    oled_write_P(os_logo[1][0], false);
-    oled_write_P(PSTR("\n"), false);
-    oled_write_P(os_logo[1][1], false);
-  }
+   void render_status(void) {
+// Render to mode icon
+static const char os_logo[][2][3] PROGMEM  ={{{0x95,0x96,0},{0xb5,0xb6,0}},{{0x97,0x98,0},{0xb7,0xb8,0}}};
+if(keymap_config.swap_lalt_lgui==false){
+oled_write_P(os_logo[0][0], false);
+oled_write_P(PSTR("\n"), false);
+oled_write_P(os_logo[0][1], false);
+}else{
+oled_write_P(os_logo[1][0], false);
+oled_write_P(PSTR("\n"), false);
+oled_write_P(os_logo[1][1], false);
+}
 
-  oled_write_P(PSTR(" "), false);
-  render_layer_status();
-  oled_write_P(PSTR("\n"), false);
+oled_write_P(PSTR(" "), false);
+render_layer_status();
+oled_write_P(PSTR("\n"), false);
 
-  // Host Keyboard LED Status
-  oled_write_P((host_keyboard_leds() & (1<<USB_LED_NUM_LOCK)) ?
-                 PSTR("NUMLOCK") : PSTR("       "), false);
-  oled_write_P((host_keyboard_leds() & (1<<USB_LED_CAPS_LOCK)) ?
-                 PSTR("CAPS") : PSTR("    "), false);
-  oled_write_P((host_keyboard_leds() & (1<<USB_LED_SCROLL_LOCK)) ?
-                 PSTR("SCLK") : PSTR("    "), false);
-  oled_write_P(PSTR("\n"), false);
-  render_rgbled_status(true);
+// Host Keyboard LED Status
+oled_write_P((host_keyboard_leds() & (1<<USB_LED_NUM_LOCK)) ?
+PSTR("NUMLOCK") : PSTR("       "), false);
+oled_write_P((host_keyboard_leds() & (1<<USB_LED_CAPS_LOCK)) ?
+PSTR("CAPS") : PSTR("    "), false);
+oled_write_P((host_keyboard_leds() & (1<<USB_LED_SCROLL_LOCK)) ?
+PSTR("SCLK") : PSTR("    "), false);
+oled_write_P(PSTR("\n"), false);
+render_rgbled_status(true);
 }
 */
-
 
 void oled_task_user(void) {
 
@@ -372,8 +373,6 @@ void oled_task_user(void) {
     return;
   }
 #endif
-
-  /* matrix_clear(&matrix); */
 
   if(is_master){
     render_layer_status();
