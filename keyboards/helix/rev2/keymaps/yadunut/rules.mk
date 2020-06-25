@@ -19,6 +19,7 @@ LED_ANIMATIONS = no        # LED animations
 # IOS_DEVICE_ENABLE = no      # connect to IOS device (iPad,iPhone)
 SPLIT_KEYBOARD = yes
 OLED_DRIVER_ENABLE = yes
+WPM_ENABLE = yes
 
 
 
