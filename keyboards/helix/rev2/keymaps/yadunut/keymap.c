@@ -334,9 +334,6 @@ static void render_layer_status(void) {
       oled_write(buf, false);
   }
   oled_write_P(PSTR("\n"), false);
-  snprintf(buf, sizeof(buf), "%d", get_current_wpm());
-  oled_write_ln_P(PSTR("WPM: "), false);
-  oled_write(buf, false);
 }
 
 /*
